@@ -1,0 +1,39 @@
+/* Animações partilhadas */
+:root{
+    --anim-duration: .7s;
+    --anim-ease: cubic-bezier(.2,.7,.2,1);
+}
+
+.anim-rise{
+    opacity: 0; transform: translateY(14px);
+    animation: rise var(--anim-duration) var(--anim-ease) forwards;
+    animation-delay: var(--delay, 0s);
+}
+.anim-fade{
+    opacity: 0;
+    animation: fade var(--anim-duration) var(--anim-ease) forwards;
+    animation-delay: var(--delay, 0s);
+}
+.anim-pop{
+    opacity: 0; transform: translateY(8px) scale(.98);
+    animation: pop var(--anim-duration) var(--anim-ease) forwards;
+    animation-delay: var(--delay, 0s);
+}
+
+/* util de atraso rápido */
+.delay-1{ --delay: .10s; }
+.delay-2{ --delay: .20s; }
+.delay-3{ --delay: .30s; }
+.delay-4{ --delay: .40s; }
+.delay-5{ --delay: .55s; }
+.delay-6{ --delay: .70s; }
+
+/* keyframes */
+@keyframes rise{ to{ opacity:1; transform:none } }
+@keyframes fade{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes pop { to{ opacity:1; transform:none } }
+
+/* acessibilidade */
+@media (prefers-reduced-motion: reduce){
+    .anim-rise,.anim-fade,.anim-pop{ animation: none !important; opacity: 1 !important; transform: none !important; }
+}

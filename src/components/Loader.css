@@ -1,0 +1,61 @@
+.loader-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: grid; place-items: center;
+    background: radial-gradient(60% 80% at 50% 20%, #1b1b3d, #0b0b1a 60%, #060610);
+    transition: opacity .35s ease, visibility .35s ease;
+}
+.loader-overlay.fade-out { opacity: 0; visibility: hidden; }
+
+.loader-card {
+    position: relative;
+    padding: 3rem 3.5rem;
+    border-radius: 1.25rem;
+    backdrop-filter: blur(6px);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    text-align: center;
+    overflow: hidden;
+}
+
+.loader-glow {
+    position: absolute; inset: -30%;
+    background: radial-gradient(circle at 50% 0%, rgba(108,99,255,.35), rgba(0,0,0,0) 55%),
+    radial-gradient(circle at 80% 100%, rgba(0,227,150,.25), rgba(0,0,0,0) 45%);
+    filter: blur(18px); pointer-events: none;
+    animation: glowMove 3.5s ease-in-out infinite alternate;
+}
+@keyframes glowMove {
+    from { transform: translateY(-6%) scale(1); }
+    to   { transform: translateY(6%)  scale(1.04); }
+}
+
+.loader-card .badge{
+    display:inline-block; margin-bottom:.9rem;
+    padding:.5rem 1rem; border-radius:999px;
+    border:1px solid rgba(255,255,255,.22);
+    font: 500 0.9rem/1.1 system-ui, -apple-system, "Segoe UI", Roboto;
+    color:#cfd4ff; background: rgba(36,39,70,.55);
+}
+.loader-card h1{
+    margin:0 0 1.1rem; color:#fff; letter-spacing:.3px;
+    font: 800 2.1rem/1.1 "Inter var", ui-sans-serif, system-ui;
+}
+.loader-card h1 span{
+    color:#9aa2ff; text-shadow: 0 0 20px rgba(110,118,255,.35);
+}
+
+.dots { display:flex; gap:.6rem; justify-content:center; }
+.dots i{
+    width:.55rem; height:.55rem; border-radius:50%;
+    background:#cfd4ff; opacity:.3;
+    animation: dot 1.2s infinite ease-in-out;
+}
+.dots i:nth-child(2){ animation-delay:.15s; }
+.dots i:nth-child(3){ animation-delay:.3s; }
+@keyframes dot { 0%,80%,100%{ transform:scale(.6);} 40%{ transform:scale(1); opacity:.8 } }
+
+@media (prefers-reduced-motion: reduce){
+    .loader-glow, .dots i{ animation: none !important; }
+}
+

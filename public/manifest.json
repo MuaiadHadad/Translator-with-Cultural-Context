@@ -1,0 +1,32 @@
+{
+  "short_name": "CultureLink",
+  "name": "CultureLink - Translation with Cultural Context",
+  "description": "Translate texts, slang, and idioms with cultural notes, usage examples, and pronunciation tips",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#667eea",
+  "background_color": "#0f172a",
+  "orientation": "portrait-primary"
+}

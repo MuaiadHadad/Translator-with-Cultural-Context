@@ -1,0 +1,18 @@
+/* Fundo e layout geral da página de tradução */
+.translate-page {
+    min-height: 100vh;
+    color: #e9ecff;
+    background:
+            radial-gradient(70% 100% at 50% -10%, #20214e 0%, rgba(6,8,20,0) 60%),
+            radial-gradient(40% 80% at 80% 0%, rgba(0,210,255,0.18) 0%, rgba(0,0,0,0) 55%),
+            radial-gradient(50% 80% at 10% 20%, rgba(168,85,247,0.12) 0%, rgba(0,0,0,0) 50%),
+            linear-gradient(180deg, #0b0b1b 0%, #090915 100%);
+    padding-top: 80px; /* espaço para navbar fixa */
+}
+
+/* Conteúdo centrado */
+main{
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
