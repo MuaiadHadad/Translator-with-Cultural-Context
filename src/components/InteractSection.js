@@ -195,7 +195,16 @@ function InteractSection() {
                     {notes.length ? (
                         <ul>
                             {notes.map((n, i) => (
-                                <li key={i}><strong>{n.title} — </strong><span>{n.body}</span></li>
+                                <li key={i}>
+                                    {typeof n === 'object' && n !== null ? (
+                                        <>
+                                            {n.title && <strong>{n.title} — </strong>}
+                                            <span>{n.body || JSON.stringify(n)}</span>
+                                        </>
+                                    ) : (
+                                        <span>{String(n)}</span>
+                                    )}
+                                </li>
                             ))}
                         </ul>
                     ) : (

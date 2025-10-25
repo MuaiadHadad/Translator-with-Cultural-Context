@@ -299,43 +299,88 @@ def get_history():
 @app.route('/chat', methods=['POST'])
 def chat():
     """
-    Real-time chat endpoint for translation and cultural questions
+    Real-time chat endpoint for translation and cultural questions with advanced AI capabilities
 
     Request body:
         - message: user's question
+        - context: optional context from previous translations
+        - language: user's preferred language for responses
 
     Returns:
-        JSON with bot response and timestamp
+        JSON with bot response, suggestions, and timestamp
     """
     try:
         data = request.json
         user_message = data.get('message', '')
+        context = data.get('context', '')
+        user_lang = data.get('language', 'en')
 
         if not user_message.strip():
             return jsonify({'error': 'Message is required'}), 400
 
-        # Chat context: translation and culture assistant
+        # Advanced prompt engineering with personality and context awareness
+        system_prompt = f"""You are Lingua, an expert multilingual AI assistant with a warm, encouraging personality. You specialize in:
+
+🌍 CORE EXPERTISE:
+- Translation assistance with cultural nuances
+- Idioms, slang, and colloquial expressions
+- Regional language variations and dialects
+- Pronunciation tips (IPA and phonetic guidance)
+- Cultural etiquette and customs
+- Language learning strategies
+- Grammar explanations with real-world examples
+
+🎯 COMMUNICATION STYLE:
+- Be friendly, patient, and encouraging
+- Use emojis sparingly to enhance clarity
+- Provide concrete examples from real conversations
+- Offer practical tips that users can apply immediately
+- When explaining cultural differences, be sensitive and respectful
+- Keep responses concise but informative (2-4 paragraphs max)
+
+💡 RESPONSE GUIDELINES:
+1. Directly answer the user's question first
+2. Add cultural context or interesting facts when relevant
+3. Suggest follow-up questions or related topics
+4. If the user seems to be learning, offer encouragement
+5. When discussing translations, explain WHY something works that way
+
+📝 FORMAT:
+- Use bullet points for lists
+- Use bold for key terms (use **term**)
+- Provide examples in quotes with translations
+- End with a helpful tip or question when appropriate
+
+Remember: You're not just translating words—you're bridging cultures and helping people communicate authentically."""
+
+        # Build conversation context
+        messages = [
+            {"role": "system", "content": system_prompt}
+        ]
+
+        # Add context from previous translation if available
+        if context:
+            messages.append({
+                "role": "system",
+                "content": f"Recent translation context: {context}"
+            })
+
+        messages.append({"role": "user", "content": user_message})
+
+        # Generate response with higher temperature for more engaging conversation
         response = client.chat.completions.create(
             model=MODEL_NAME,
-            messages=[
-                {
-                    "role": "system",
-                    "content": """You are a friendly multilingual assistant specialized in:
-- Translation help and clarification
-- Cultural context and etiquette
-- Language learning tips
-- Pronunciation guidance
-- Slang and idioms explanation
-
-Be concise, helpful, and culturally sensitive."""
-                },
-                {"role": "user", "content": user_message}
-            ],
-            temperature=0.7,
-            max_tokens=400
+            messages=messages,
+            temperature=0.8,  # More creative and conversational
+            max_tokens=600,
+            presence_penalty=0.3,  # Encourage diverse vocabulary
+            frequency_penalty=0.3   # Reduce repetition
         )
 
         bot_response = response.choices[0].message.content.strip()
+
+        # Generate smart suggestions based on the conversation
+        suggestions = generate_smart_suggestions(user_message, bot_response)
 
         # Save to database
         conn = sqlite3.connect(DB_PATH)
@@ -349,12 +394,64 @@ Be concise, helpful, and culturally sensitive."""
 
         return jsonify({
             'response': bot_response,
+            'suggestions': suggestions,
             'timestamp': datetime.now().isoformat()
         })
 
     except Exception as e:
         print(f"Error in chat: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+def generate_smart_suggestions(user_message, bot_response):
+    """
+    Generate smart follow-up suggestions based on conversation context
+
+    Args:
+        user_message: The user's question
+        bot_response: The bot's response
+
+    Returns:
+        List of suggested follow-up questions
+    """
+    suggestions = []
+
+    # Keyword-based smart suggestions
+    user_lower = user_message.lower()
+
+    if any(word in user_lower for word in ['translate', 'mean', 'say']):
+        suggestions.extend([
+            "How do I pronounce this?",
+            "Are there regional variations?",
+            "What's the formal version?"
+        ])
+    elif any(word in user_lower for word in ['slang', 'informal', 'casual']):
+        suggestions.extend([
+            "When should I use this?",
+            "What's the origin of this expression?",
+            "Are there similar expressions?"
+        ])
+    elif any(word in user_lower for word in ['culture', 'custom', 'etiquette']):
+        suggestions.extend([
+            "What else should I know?",
+            "Are there common mistakes to avoid?",
+            "How do locals actually use this?"
+        ])
+    elif any(word in user_lower for word in ['pronounce', 'pronunciation', 'sound']):
+        suggestions.extend([
+            "Can you break it down syllable by syllable?",
+            "Are there similar sounding words?",
+            "What are common pronunciation mistakes?"
+        ])
+    else:
+        # Generic helpful suggestions
+        suggestions.extend([
+            "Tell me more about this",
+            "Give me an example sentence",
+            "What's the cultural context?"
+        ])
+
+    return suggestions[:3]  # Return top 3 suggestions
 
 
 @app.route('/grammar', methods=['POST'])

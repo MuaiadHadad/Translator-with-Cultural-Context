@@ -279,6 +279,7 @@ const resources = {
         backendOffline: "Backend Offline",
         backendOfflineMsg: "Inicia o servidor Flask para traduções inteligentes com IA."
       },
+      // Chat Widget
       chat: {
         title: "Assistente Cultural",
         welcome: "👋 Olá! Sou o teu assistente de tradução.",
@@ -290,7 +291,13 @@ const resources = {
         placeholder: "Escreve a tua pergunta...",
         send: "Enviar",
         errorMsg: "Desculpe, houve um erro. Verifica se o backend está a funcionar.",
-        connectionError: "Não consegui conectar ao servidor. Inicia o backend Flask primeiro!"
+        connectionError: "Não consegui conectar ao servidor. Inicia o backend Flask primeiro!",
+        online: "Online",
+        close: "Fechar",
+        suggestions: "Sugestões",
+        suggestSlang: "Como uso expressões informais?",
+        suggestCultural: "Qual o contexto cultural?",
+        suggestPronunciation: "Como pronuncio isto?"
       },
       languages: {
         auto: "Auto-detetar",
@@ -604,10 +611,10 @@ const resources = {
         },
         multilingual: {
           title: "Interfaz Multilingüe",
-          description: "Usa la aplicación en tu idioma preferido con traducción completa de la interfaz.",
-          highlight1: "Más de 6 idiomas de interfaz",
+          description: "Usa la aplicación en tu idioma preferido com tradução completa de la interfaz.",
+          highlight1: "Más de 6 idiomas de interface",
           highlight2: "Detección automática del idioma del navegador",
-          highlight3: "Preferencia de idioma persistente"
+          highlight3: "Preferência de idioma persistente"
         },
         ctaTitle: "¿Listo para Empezar a Traducir?",
         ctaSubtitle: "Prueba todas las características gratis sin necesidad de cuenta.",
@@ -1157,10 +1164,11 @@ const resources = {
         charLimit: "حرف",
         culturalNotes: "ملاحظات ثقافية",
         history: "الترجمات الأخيرة",
-        emptyHistory: "لا توجد ترجمات ��عد. ابدأ الترجمة!",
+        emptyHistory: "لا توجد ترجمات بعد. ابدأ الترجمة!",
         backendOffline: "الخادم غير متصل",
         backendOfflineMsg: "قم بتشغيل خادم Flask للحصول على ترجمات ذكية بالذكاء الاصطناعي."
       },
+      // Chat Widget
       chat: {
         title: "المساعد الثقافي",
         welcome: "👋 مرحباً! أنا مساعد الترجمة الخاص بك.",
@@ -1172,7 +1180,13 @@ const resources = {
         placeholder: "اكتب سؤالك...",
         send: "إرسال",
         errorMsg: "عذراً، حدث خطأ. تحقق مما إذا كان الخادم يعمل.",
-        connectionError: "تعذر الاتصال بالخادم. قم بتشغيل Flask backend أولاً!"
+        connectionError: "تعذر الاتصال بالخادم. قم بتشغيل Flask backend أولاً!",
+        online: "Online",
+        close: "Fechar",
+        suggestions: "Sugestões",
+        suggestSlang: "Como uso expressões informais؟",
+        suggestCultural: "Qual o contexto cultural؟",
+        suggestPronunciation: "Como pronuncio isto؟"
       },
       languages: {
         auto: "كشف تلقائي",
@@ -1279,7 +1293,7 @@ const resources = {
       about: {
         pageTitle: "حول منصتنا للترجمة",
         pageTitleHighlight: "نحن في مهمة لكسر الحواجز اللغوية",
-        pageSubtitle: "نحن في مهمة لكسر الحواجز اللغوية من خلال الترجمة الذكية التي تحافظ على المعنى والسياق والفروق الثقافية.",
+        pageSubtitle: "نحن في مهمة لكسر الحواجز اللغوية من خلال الترجمة الذكية التي تحافظ على المعنى والسياق والف��وق الثقافية.",
         stats: {
           languages: "اللغات",
           powered: "مدعوم",

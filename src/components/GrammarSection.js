@@ -115,10 +115,10 @@ export default function GrammarSection() {
                     <div className="grammar-result">
                         <div className="result-header">
                             <h3>{result.word}</h3>
-                            {result.pronunciation && (
+                            {result.pronunciation && typeof result.pronunciation === 'string' && (
                                 <span className="pronunciation">/{result.pronunciation}/</span>
                             )}
-                            {result.wordType && (
+                            {result.wordType && typeof result.wordType === 'string' && (
                                 <span className="word-badge">{result.wordType}</span>
                             )}
                         </div>
@@ -126,7 +126,7 @@ export default function GrammarSection() {
                         {result.definition && (
                             <div className="result-section">
                                 <h4><FontAwesomeIcon icon={faBookOpen} /> {t('grammar.definition')}</h4>
-                                <p>{result.definition}</p>
+                                <p>{typeof result.definition === 'string' ? result.definition : JSON.stringify(result.definition)}</p>
                             </div>
                         )}
 
@@ -136,11 +136,23 @@ export default function GrammarSection() {
                                 <ul className="examples-list">
                                     {result.examples.map((ex, idx) => (
                                         <li key={idx}>
-                                            <span className="example-text">{ex.text}</span>
-                                            {ex.translation && (
-                                                <span className="example-translation">
-                                                    → {ex.translation}
-                                                </span>
+                                            {typeof ex === 'string' ? (
+                                                <span className="example-text">{ex}</span>
+                                            ) : typeof ex === 'object' && ex !== null ? (
+                                                <>
+                                                    <span className="example-text">
+                                                        {typeof ex.text === 'string' ? ex.text :
+                                                         typeof ex.example === 'string' ? ex.example :
+                                                         JSON.stringify(ex)}
+                                                    </span>
+                                                    {ex.translation && typeof ex.translation === 'string' && (
+                                                        <span className="example-translation">
+                                                            → {ex.translation}
+                                                        </span>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <span className="example-text">{String(ex)}</span>
                                             )}
                                         </li>
                                     ))}
@@ -151,30 +163,44 @@ export default function GrammarSection() {
                         {result.usage && (
                             <div className="result-section">
                                 <h4><FontAwesomeIcon icon={faBullseye} /> {t('grammar.usage')}</h4>
-                                <p>{result.usage}</p>
+                                <p>{typeof result.usage === 'string' ? result.usage :
+                                    typeof result.usage === 'object' ? JSON.stringify(result.usage) :
+                                    String(result.usage)}</p>
                             </div>
                         )}
 
-                        {result.conjugation && result.conjugation.length > 0 && (
+                        {result.conjugation && Array.isArray(result.conjugation) && result.conjugation.length > 0 && (
                             <div className="result-section">
                                 <h4><FontAwesomeIcon icon={faLanguage} /> {t('grammar.conjugation')}</h4>
                                 <div className="conjugation-grid">
                                     {result.conjugation.map((conj, idx) => (
                                         <div key={idx} className="conjugation-item">
-                                            <span className="conj-tense">{conj.tense}</span>
-                                            <span className="conj-form">{conj.form}</span>
+                                            <span className="conj-tense">
+                                                {typeof conj === 'object' && conj !== null ?
+                                                    (typeof conj.tense === 'string' ? conj.tense : String(conj.tense || '')) :
+                                                    String(conj)}
+                                            </span>
+                                            {typeof conj === 'object' && conj !== null && conj.form && (
+                                                <span className="conj-form">
+                                                    {typeof conj.form === 'string' ? conj.form : String(conj.form)}
+                                                </span>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        {result.notes && result.notes.length > 0 && (
+                        {result.notes && Array.isArray(result.notes) && result.notes.length > 0 && (
                             <div className="result-section">
                                 <h4><FontAwesomeIcon icon={faCircleInfo} /> {t('grammar.notes')}</h4>
                                 <ul className="notes-list">
                                     {result.notes.map((note, idx) => (
-                                        <li key={idx}>{note}</li>
+                                        <li key={idx}>
+                                            {typeof note === 'string' ? note :
+                                             typeof note === 'object' && note !== null ? JSON.stringify(note) :
+                                             String(note)}
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
