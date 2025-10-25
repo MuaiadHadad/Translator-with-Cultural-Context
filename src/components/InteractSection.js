@@ -1,61 +1,23 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import "./InteractSection.css";
 
-/** Idiomas */
-const LANGS = [
-    { code: "auto", name: "Auto-detectar" },
-    { code: "en", name: "English" },
-    { code: "pt", name: "Português" },
-    { code: "es", name: "Español" },
-    { code: "fr", name: "Français" },
-    { code: "de", name: "Deutsch" },
-    { code: "ar", name: "العربية" },
-];
+function InteractSection() {
+    const { t, i18n } = useTranslation();
 
-function naiveDetectLang(text) {
-    const t = text.normalize("NFKD");
-    if (/[اأإء-ي]/.test(t)) return "ar";
-    if (/[áâãàéêíóôõúç]/i.test(t)) return "pt";
-    if (/[ñáéíóúü]/i.test(t)) return "es";
-    if (/[äöüß]/i.test(t)) return "de";
-    if (/[àâçéèêëîïôùûüÿœ]/i.test(t)) return "fr";
-    return "en";
-}
+    /** Idiomas */
+    const LANGS = useMemo(() => [
+        { code: "auto", name: t('languages.auto') },
+        { code: "en", name: t('languages.en') },
+        { code: "pt", name: t('languages.pt') },
+        { code: "es", name: t('languages.es') },
+        { code: "fr", name: t('languages.fr') },
+        { code: "de", name: t('languages.de') },
+        { code: "ar", name: t('languages.ar') },
+    ], [t]);
 
-async function translateText({ text, source, target }) {
-    if (!text.trim()) return "";
-    const src = source === "auto" ? naiveDetectLang(text) : source;
-    if (src === target) return text;
-    try {
-        const res = await fetch("http://localhost:5000/translate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ q: text, source: src, target, format: "text" }),
-        });
-        if (res.ok) {
-            const data = await res.json();
-            return data.translatedText || text;
-        }
-    } catch {}
-    return `[${src}→${target}] ${text}`;
-}
-
-function buildCulturalNotes(src, tgt, input, output) {
-    const notes = [];
-    if (/^\s*cheers!?$/i.test(input)) {
-        notes.push({ title: "Gíria britânica: Cheers", body: "Pode significar 'obrigado' (UK) ou 'saúde' (brinde). Em contextos formais, evite." });
-    }
-    if (/\bbom apetite\b|bon app[ée]tit/i.test(input)) {
-        notes.push({ title: "Expressão cultural", body: "Em PT-EU usa-se 'bom apetite'. Em EN é comum omitir ou usar 'enjoy your meal'." });
-    }
-    if (src === "ar") {
-        notes.push({ title: "Nuances árabe → ocidente", body: "“insha’Allah”, “yalla” carregam contexto cultural. Traduza apenas se fizer sentido ao leitor." });
-    }
-    if (!notes.length) notes.push({ title: "Dica", body: "Evita traduções literais de gírias. Ajusta o tom (formal/informal) ao canal." });
-    return notes;
-}
-
-export default function InteractSection() {
     const [text, setText] = useState("");
     const [source, setSource] = useState("auto");
     const [target, setTarget] = useState("pt");
@@ -63,7 +25,7 @@ export default function InteractSection() {
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [history, setHistory] = useState([]);
-    const [copied, setCopied] = useState(""); // "input" | "output" | ""
+    const [copied, setCopied] = useState("");
     const [chars, setChars] = useState(0);
     const cardRef = useRef(null);
 
@@ -112,12 +74,17 @@ export default function InteractSection() {
 
     async function handleTranslate() {
         setLoading(true);
-        const out = await translateText({ text, source, target });
-        setTranslated(out);
+        const { translatedText, culturalNotes } = await translateText({
+            text,
+            source,
+            target,
+            uiLang: i18n.language  // Enviar idioma da interface
+        });
+        setTranslated(translatedText);
         const src = source === "auto" ? naiveDetectLang(text) : source;
-        setNotes(buildCulturalNotes(src, target, text, out));
+        setNotes(culturalNotes);
         setLoading(false);
-        setHistory((h) => [{ input: text, output: out, src, tgt: target, ts: Date.now() }, ...h].slice(0, 8));
+        setHistory((h) => [{ input: text, output: translatedText, src, tgt: target, ts: Date.now() }, ...h].slice(0, 8));
     }
 
     function swapLangs() {
@@ -134,72 +101,74 @@ export default function InteractSection() {
     return (
         <section className="interact-wrap" id="translate">
             {/* Toast de copiar */}
-            <div className={`toast ${copied ? "show" : ""}`}>{copied === "input" ? "Texto copiado!" : "Tradução copiada!"}</div>
+            <div className={`toast ${copied ? "show" : ""}`}>
+                {copied === "input" ? t('translate.toastInput') : t('translate.toastOutput')}
+            </div>
 
             <div ref={cardRef} className="interact-card anim-rise delay-2">
                 <div className="glow-bg" />
 
                 <div className="interact-head">
                     <div className="chips anim-pop delay-2">
-                        <span className="chip">Context-Aware</span>
-                        <span className="chip alt">Idioms • Slang</span>
-                        <span className="chip">Pronunciation</span>
+                        <span className="chip">{t('translate.chips.contextAware')}</span>
+                        <span className="chip alt">{t('translate.chips.idioms')}</span>
+                        <span className="chip">{t('translate.chips.pronunciation')}</span>
                     </div>
-                    <h2 className="anim-rise delay-3">Tradução com Contexto Cultural</h2>
-                    <p className="anim-fade delay-4">Escreve o texto, escolhe os idiomas e recebe tradução + notas culturais.</p>
+                    <h2 className="anim-rise delay-3">{t('translate.title')}</h2>
+                    <p className="anim-fade delay-4">{t('translate.subtitle')}</p>
                 </div>
 
                 <div className="row">
                     <div className="col anim-rise delay-4">
-                        <label>De</label>
+                        <label>{t('translate.from')}</label>
                         <div className="select-row">
-                            <select value={source} onChange={(e) => setSource(e.target.value)} aria-label="Idioma de origem">
+                            <select value={source} onChange={(e) => setSource(e.target.value)} aria-label={t('translate.from')}>
                                 {LANGS.map((l) => (
                                     <option key={l.code} value={l.code}>{l.name}</option>
                                 ))}
                             </select>
-                            <button className="ghost swap" onClick={swapLangs} title="Trocar idiomas" aria-label="Trocar idiomas">⇄</button>
+                            <button className="ghost swap" onClick={swapLangs} title={t('translate.swap')} aria-label={t('translate.swap')}>⇄</button>
                         </div>
 
                         <div className="input-wrap">
-              <textarea
-                  className="input"
-                  placeholder="Escreve o texto aqui..."
-                  value={text}
-                  onChange={(e) => { setText(e.target.value); setChars(e.target.value.length); }}
-                  rows={6}
-              />
+                            <textarea
+                                className="input"
+                                placeholder={t('translate.placeholder')}
+                                value={text}
+                                onChange={(e) => { setText(e.target.value); setChars(e.target.value.length); }}
+                                rows={6}
+                            />
                             <div className="meta">
-                <span className="detected">
-                  {text ? (source === "auto" ? `Detetado: ${naiveDetectLang(text)}` : `Origem: ${source}`) : "—"}
-                </span>
+                                <span className="detected">
+                                    {text ? (source === "auto" ? `${t('translate.detected')}: ${naiveDetectLang(text)}` : `${t('translate.source')}: ${source}`) : "—"}
+                                </span>
                                 <span className={`count ${chars > 1600 ? "warn" : ""}`}>{chars}/2000</span>
                             </div>
                         </div>
 
                         <div className="btn-row anim-pop delay-5">
                             <button className="primary" onClick={handleTranslate} disabled={loading || !text.trim()}>
-                                {loading ? "A traduzir…" : "Traduzir"}
+                                {loading ? t('translate.translating') : t('translate.translateBtn')}
                             </button>
                             <button className="ghost" onClick={() => copyToClipboard(text, "input")} disabled={!text}>
-                                Copiar
+                                {t('translate.copy')}
                             </button>
                             <button className="ghost" onClick={() => { setText(""); setChars(0); }} disabled={!text}>
-                                Limpar
+                                {t('translate.clear')}
                             </button>
                         </div>
                     </div>
 
                     <div className="col anim-rise delay-5">
-                        <label>Para</label>
-                        <select value={target} onChange={(e) => setTarget(e.target.value)} aria-label="Idioma de destino">
+                        <label>{t('translate.to')}</label>
+                        <select value={target} onChange={(e) => setTarget(e.target.value)} aria-label={t('translate.to')}>
                             {LANGS.filter((l) => l.code !== "auto").map((l) => (
                                 <option key={l.code} value={l.code}>{l.name}</option>
                             ))}
                         </select>
 
                         <div className={`output ${loading ? "loading" : ""} anim-fade delay-6`} aria-live="polite">
-                            {translated && !loading ? translated : (!loading ? <span className="muted">A tradução aparecerá aqui…</span> : null)}
+                            {translated && !loading ? translated : (!loading ? <span className="muted">{t('translate.placeholder')}</span> : null)}
                             {loading && (
                                 <div className="shimmer">
                                     <div className="line" style={{"--w":"92%"}} />
@@ -212,17 +181,17 @@ export default function InteractSection() {
 
                         <div className="btn-row anim-pop delay-6">
                             <button className="ghost" onClick={() => copyToClipboard(translated, "output")} disabled={!translated || loading}>
-                                Copiar
+                                {t('translate.copy')}
                             </button>
                             <button className="ghost" onClick={() => handleSpeak(translated, target)} disabled={!translated || !canSpeak || loading}>
-                                🔊 Ouvir
+                                <FontAwesomeIcon icon={faVolumeHigh} /> {t('translate.chips.pronunciation')}
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div className="notes anim-rise delay-6">
-                    <h3>Contexto Cultural</h3>
+                    <h3>{t('translate.culturalNotes')}</h3>
                     {notes.length ? (
                         <ul>
                             {notes.map((n, i) => (
@@ -230,20 +199,20 @@ export default function InteractSection() {
                             ))}
                         </ul>
                     ) : (
-                        <p className="muted">Quando houver texto, mostramos aqui gírias, expressões e dicas de uso.</p>
+                        <p className="muted">{t('translate.subtitle')}</p>
                     )}
                 </div>
 
                 {!!history.length && (
                     <div className="history anim-rise delay-6">
-                        <h4>Histórico recente</h4>
+                        <h4>{t('translate.history')}</h4>
                         <div className="list">
                             {history.map((h) => (
                                 <button
                                     key={h.ts}
                                     className="history-item"
                                     onClick={() => { setText(h.input); setTranslated(h.output); setChars(h.input.length); }}
-                                    title="Carregar no editor"
+                                    title={t('translate.history')}
                                 >
                                     <span className="tag">{h.src}→{h.tgt}</span>
                                     <span className="line">{h.input.slice(0, 48)}{h.input.length > 48 ? "…" : ""}</span>
@@ -256,3 +225,60 @@ export default function InteractSection() {
         </section>
     );
 }
+
+function naiveDetectLang(text) {
+    const t = text.normalize("NFKD");
+    if (/[اأإء-ي]/.test(t)) return "ar";
+    if (/[áâãàéêíóôõúç]/i.test(t)) return "pt";
+    if (/[ñáéíóúü]/i.test(t)) return "es";
+    if (/[äöüß]/i.test(t)) return "de";
+    if (/[àâçéèêëîïôùûüÿœ]/i.test(t)) return "fr";
+    return "en";
+}
+
+async function translateText({ text, source, target, uiLang = 'en' }) {
+    if (!text.trim()) return { translatedText: "", culturalNotes: [] };
+    const src = source === "auto" ? naiveDetectLang(text) : source;
+    if (src === target) return { translatedText: text, culturalNotes: [] };
+
+    try {
+        const res = await fetch("http://localhost:5000/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                q: text,
+                source: src,
+                target,
+                format: "text",
+                ui_lang: uiLang  // Enviar idioma da UI ao backend
+            }),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            return {
+                translatedText: data.translatedText || text,
+                culturalNotes: data.culturalNotes || []
+            };
+        }
+    } catch (err) {
+        console.error("Translation error:", err);
+    }
+
+    // Fallback se o backend não estiver disponível
+    const fallbackMessages = {
+        en: { title: "Backend Offline", body: "Start the Flask server for AI-powered smart translations." },
+        pt: { title: "Backend Offline", body: "Inicia o servidor Flask para traduções inteligentes com IA." },
+        es: { title: "Backend Desconectado", body: "Inicia el servidor Flask para traducciones inteligentes con IA." },
+        fr: { title: "Backend Hors Ligne", body: "Démarrez le serveur Flask pour des traductions intelligentes avec IA." },
+        de: { title: "Backend Offline", body: "Starten Sie den Flask-Server für intelligente KI-Übersetzungen." },
+        ar: { title: "الخادم غير متصل", body: "قم بتشغيل خادم Flask للحصول على ترجمات ذكية بالذكاء الاصطناعي." }
+    };
+
+    return {
+        translatedText: `[${src}→${target}] ${text}`,
+        culturalNotes: [fallbackMessages[uiLang] || fallbackMessages.en]
+    };
+}
+
+export default InteractSection;

@@ -1,0 +1,13 @@
+/* Fundo e layout geral da página de gramática */
+.grammar-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding-top: 90px;
+}
+
+/* Conteúdo centrado */
+.grammar-page main {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}

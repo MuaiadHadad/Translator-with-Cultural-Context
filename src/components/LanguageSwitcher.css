@@ -1,0 +1,144 @@
+.language-switcher {
+    position: relative;
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.lang-btn .flag {
+    font-size: 1.2rem;
+}
+
+.lang-btn .lang-code {
+    font-weight: 600;
+}
+
+.lang-btn .chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.language-switcher:has(.lang-dropdown) .chevron {
+    transform: rotate(180deg);
+}
+
+.lang-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+}
+
+.lang-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 200px;
+    background: rgba(20, 20, 40, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    z-index: 999;
+    animation: dropdown-appear 0.2s ease;
+}
+
+@keyframes dropdown-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.lang-option:hover {
+    background: rgba(102, 126, 234, 0.2);
+}
+
+.lang-option.active {
+    background: rgba(102, 126, 234, 0.3);
+    font-weight: 600;
+}
+
+.lang-option .flag {
+    font-size: 1.4rem;
+}
+
+.lang-option .lang-name {
+    flex: 1;
+    text-align: left;
+}
+
+.lang-option .check-icon {
+    width: 18px;
+    height: 18px;
+    color: #667eea;
+}
+
+/* RTL Support */
+[dir="rtl"] .lang-dropdown {
+    left: 0;
+    right: auto;
+}
+
+[dir="rtl"] .lang-option .lang-name {
+    text-align: right;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .lang-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .lang-btn .lang-code {
+        display: none;
+    }
+
+    .lang-dropdown {
+        right: -0.5rem;
+    }
+
+    [dir="rtl"] .lang-dropdown {
+        left: -0.5rem;
+    }
+}

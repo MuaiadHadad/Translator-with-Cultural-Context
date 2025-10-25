@@ -4,6 +4,7 @@
     background: radial-gradient(70% 100% at 50% 0%, #1a1a3a 0%, #0b0b1b 55%, #070713 100%);
     color:#e8eaff;
     display:grid; place-items:center; padding: 6rem 1rem 4rem;
+    padding-top: 140px;
     isolation:isolate;
     font-family: "Inter var", ui-sans-serif, system-ui, -apple-system;
 }

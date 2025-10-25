@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import { useTranslation } from "react-i18next";
 import "./HomePage.css";
 
 export default function HomePage() {
+    const { t } = useTranslation();
     const rootRef = useRef(null);
 
     useEffect(() => {
@@ -21,7 +22,6 @@ export default function HomePage() {
 
     return (
         <>
-            <Navbar />
             <div ref={rootRef} className="hero">
                 <div className="hero-rays" />
                 <div className="particles" aria-hidden="true">
@@ -40,18 +40,17 @@ export default function HomePage() {
 
                 <div className="hero-inner">
                     <h1 className="title anim-rise delay-2">
-                        Go Beyond Translation <br />
-                        Real <span className="grad">Cultural</span> Context
+                        {t('home.title')} <br />
+                        {t('home.titleEnd')} <span className="grad">{t('home.titleHighlight')}</span> Context
                     </h1>
 
                     <p className="subtitle anim-fade delay-3">
-                        Translate texts, slang, and idioms with cultural notes, usage examples,
-                        and pronunciation tips. Perfect for chat, work, and study—without losing meaning.
+                        {t('home.subtitle')}
                     </p>
 
                     <div className="cta-row anim-pop delay-4">
                         <Link className="cta" to="/translate">
-                            Get Started
+                            {t('home.cta')}
                         </Link>
                     </div>
                 </div>

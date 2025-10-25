@@ -1,0 +1,76 @@
+/* Header fixo no topo */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem 0 90px;
+    z-index: 900;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.site-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.site-logo:hover {
+    transform: scale(1.05);
+}
+
+.site-logo .logo-icon {
+    width: 40px;
+    height: 40px;
+    filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.6));
+    transition: all 0.3s ease;
+}
+
+.site-logo:hover .logo-icon {
+    filter: drop-shadow(0 0 12px rgba(102, 126, 234, 0.9));
+    transform: rotate(5deg);
+}
+
+.site-logo .logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .site-header {
+        padding: 0 1rem;
+        height: 60px;
+    }
+
+    .site-logo .logo-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .site-logo .logo-text {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-header {
+        padding: 0 0.75rem;
+    }
+
+    .site-logo .logo-text {
+        font-size: 1.1rem;
+    }
+}

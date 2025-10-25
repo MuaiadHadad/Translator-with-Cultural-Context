@@ -1,13 +1,8 @@
 /* Fundo e layout geral da página de tradução */
 .translate-page {
     min-height: 100vh;
-    color: #e9ecff;
-    background:
-            radial-gradient(70% 100% at 50% -10%, #20214e 0%, rgba(6,8,20,0) 60%),
-            radial-gradient(40% 80% at 80% 0%, rgba(0,210,255,0.18) 0%, rgba(0,0,0,0) 55%),
-            radial-gradient(50% 80% at 10% 20%, rgba(168,85,247,0.12) 0%, rgba(0,0,0,0) 50%),
-            linear-gradient(180deg, #0b0b1b 0%, #090915 100%);
-    padding-top: 80px; /* espaço para navbar fixa */
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding-top: 90px;
 }
 
 /* Conteúdo centrado */
@@ -15,4 +10,209 @@ main{
     display: flex;
     justify-content: center;
     padding: 0;
+}
+
+/* Page Tabs - Melhorado */
+.page-tabs {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 0 2rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    position: relative;
+}
+
+.page-tabs::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.page-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px 12px 0 0;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.page-tab::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-tab::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page-tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(102, 126, 234, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+}
+
+.page-tab:hover:not(.active)::after {
+    opacity: 1;
+}
+
+.page-tab.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    border-color: rgba(102, 126, 234, 0.5);
+    border-bottom-color: transparent;
+    color: white;
+    box-shadow:
+        0 -8px 32px rgba(102, 126, 234, 0.25),
+        0 4px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px) scale(1.01);
+    z-index: 10;
+}
+
+.page-tab.active::before {
+    transform: scaleX(1);
+}
+
+.page-tab.active::after {
+    opacity: 1;
+}
+
+.page-tab.active .tab-icon {
+    animation: tabPulse 2s ease-in-out infinite;
+}
+
+@keyframes tabPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px rgba(102, 126, 234, 0.5));
+    }
+    50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8));
+    }
+}
+
+.tab-icon {
+    width: 18px;
+    height: 18px;
+    transition: all 0.3s ease;
+}
+
+.page-tab:hover .tab-icon {
+    transform: scale(1.1);
+}
+
+.page-tab.active .tab-icon {
+    filter: drop-shadow(0 0 4px rgba(102, 126, 234, 0.6));
+}
+
+/* Indicador visual adicional para tab ativa */
+.page-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+    border-radius: 2px 2px 0 0;
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Efeito de transição entre tabs */
+.page-tab:active {
+    transform: translateY(-2px) scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+/* Badge de contagem (opcional para futuras features) */
+.page-tab .tab-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-tabs {
+        padding: 1rem 1rem 0 1rem;
+        gap: 0.5rem;
+    }
+
+    .page-tab {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.85rem;
+        flex: 1;
+        min-width: auto;
+    }
+
+    .page-tab span {
+        display: none;
+    }
+
+    .tab-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .page-tab.active {
+        transform: translateY(-2px) scale(1.01);
+    }
+}
+
+@media (max-width: 480px) {
+    .page-tabs {
+        padding: 0.75rem 0.75rem 0 0.75rem;
+    }
+
+    .page-tab {
+        padding: 0.6rem 0.9rem;
+        border-radius: 10px 10px 0 0;
+    }
 }
